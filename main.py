@@ -38,13 +38,18 @@ class Pomodoro:
         return f"{minutes:02}:{seconds:02}"
 
     def start_timer(self):
-        return
+        if not self.timer_running:
+            self.timer_running = True
+            self.count_down()
 
     def pause_timer(self):
-        return
+        self.timer_running = False
 
     def reset_timer(self):
-        return
+        self.timer_running = False
+        self.time_left = WORK_TIME
+        self.work_sessions_completed = 0
+        self.label.config(text=self.format_time(self.time_left))
 
     def count_down(self):
         return
