@@ -1,9 +1,12 @@
 import time
 import tkinter as tk
+import pygame
 
-WORK_TIME = 0.2 * 60  # 25 minutes
-SHORT_BREAK_TIME = 0.05 * 60  # 5 minutes
-LONG_BREAK_TIME = 0.1 * 60  # 15 minutes
+pygame.mixer.init()
+
+WORK_TIME = 25 * 60  # 25 minutes
+SHORT_BREAK_TIME = 5 * 60  # 5 minutes
+LONG_BREAK_TIME = 15 * 60  # 15 minutes
 
 
 class Pomodoro:
@@ -37,6 +40,9 @@ class Pomodoro:
         self.reset_button = tk.Button(root, text="Reset", command=self.reset_timer)
         self.reset_button.pack(side="left", padx=30)
 
+        self.alarm_sound = pygame.mixer.Sound("alarm_sound.mp3")
+        self.click_sound = pygame.mixer.Sound("click_sound.mp3")
+
     def format_time(self, seconds):
         minutes = seconds // 60
         seconds = seconds % 60
@@ -50,8 +56,12 @@ class Pomodoro:
             self.timer_running = True
             self.count_down()
 
+            self.click_sound.play()
+
     def pause_timer(self):
         self.timer_running = False
+
+        self.click_sound.play()
 
     def reset_timer(self):
         self.timer_running = False
@@ -59,6 +69,8 @@ class Pomodoro:
         self.work_sessions_completed = 0
         self.label.config(text=self.format_time(self.time_left))
         self.message_label.config(text="Start when ready!")
+
+        self.click_sound.play()
 
     def count_down(self):
         if self.timer_running and self.time_left > 0:
@@ -69,6 +81,7 @@ class Pomodoro:
             self.timer_end()
 
     def timer_end(self):
+        self.alarm_sound.play()
         if self.current_task == "work":
             self.current_task = "break"
             self.start_break()
